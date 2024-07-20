@@ -3,3 +3,14 @@ controllers:
         path: ../src/Controller/
         namespace: App\Controller
     type: attribute
+post_index:
+    path: /post
+    controller: App\Controller\PostController::index
+
+post_new:
+    path: /post/new
+    controller: App\Controller\PostController::new
+
+post_show:
+    path: /post/{id}
+    controller: App\Controller\PostController::show
