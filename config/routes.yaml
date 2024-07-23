@@ -1,8 +1,7 @@
 controllers:
-    resource:
-        path: ../src/Controller/
-        namespace: App\Controller
+    resource: '../src/Controller/'
     type: attribute
+
 post_index:
     path: /post
     controller: App\Controller\PostController::index
@@ -14,3 +13,15 @@ post_new:
 post_show:
     path: /post/{id}
     controller: App\Controller\PostController::show
+
+app_register:
+    path: /register
+    controller: App\Controller\RegistrationController::register
+
+app_login:
+    path: /login
+    controller: App\Controller\SecurityController::login
+
+app_logout:
+    path: /logout
+    controller: App\Controller\SecurityController::logout

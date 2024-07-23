@@ -5,17 +5,24 @@
 namespace App\Controller;
 
 use App\Entity\Post;
+use App\Form\PostFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 class PostController extends AbstractController
 {
     #[Route('/post', name: 'post_index')]
     public function index(EntityManagerInterface $entityManager): Response
     {
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
+
         $posts = $entityManager->getRepository(Post::class)->findAll();
 
         return $this->render('index.html.twig', [
@@ -24,15 +31,43 @@ class PostController extends AbstractController
     }
 
     #[Route('/post/new', name: 'post_new')]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
-        if ($request->isMethod('POST')) {
-            $post = new Post();
-            $post->setTitle($request->request->get('title'));
-            $post->setContent($request->request->get('content'));
+        $user = $this->getUser();
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $post = new Post();
+        $form = $this->createForm(PostFormType::class, $post);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $post->setAuthor($this->getUser());
             $post->setCreatedAt(new \DateTimeImmutable());
             $post->setUpdatedAt(new \DateTimeImmutable());
-            $post->setAuthorId(1);
+
+            $imageFile = $form->get('image')->getData();
+            if ($imageFile) {
+                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
+
+                try {
+                    $imageFile->move(
+                        $this->getParameter('images_directory'),
+                        $newFilename
+                    );
+                } catch (FileException $e) {
+                    // handle exception if something happens during file upload
+                    $this->addFlash('error', 'Failed to upload image.');
+                    return $this->render('post/new.html.twig', [
+                        'form' => $form->createView(),
+                    ]);
+                }
+
+                $post->setImage($newFilename);
+            }
 
             $entityManager->persist($post);
             $entityManager->flush();
@@ -40,8 +75,11 @@ class PostController extends AbstractController
             return $this->redirectToRoute('post_index');
         }
 
-        return $this->render('new.html.twig');
+        return $this->render('new.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
+
 
     #[Route('/post/{id}', name: 'post_show')]
     public function show(Post $post): Response
