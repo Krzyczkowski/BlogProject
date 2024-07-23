@@ -2,23 +2,22 @@
 
 namespace App\Repository;
 
-use App\Entity\Comment;
 use App\Entity\CommentVote;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Comment>
+ * @extends ServiceEntityRepository<CommentVote>
  */
-class CommentRepository extends ServiceEntityRepository
+class CommentVoteRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Comment::class);
+        parent::__construct($registry, CommentVote::class);
     }
 
 //    /**
-//     * @return Comment[] Returns an array of Comment objects
+//     * @return CommentVote[] Returns an array of CommentVote objects
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -32,7 +31,7 @@ class CommentRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?Comment
+//    public function findOneBySomeField($value): ?CommentVote
 //    {
 //        return $this->createQueryBuilder('c')
 //            ->andWhere('c.exampleField = :val')
@@ -41,16 +40,4 @@ class CommentRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
-    public function getVoteCounts(Comment $comment): array
-    {
-        $qb = $this->createQueryBuilder('c')
-            ->leftJoin(CommentVote::class, 'v', 'WITH', 'c.id = v.comment')
-            ->addSelect('SUM(CASE WHEN v.value = 1 THEN 1 ELSE 0 END) AS likeCount')
-            ->addSelect('SUM(CASE WHEN v.value = -1 THEN 1 ELSE 0 END) AS dislikeCount')
-            ->where('c.id = :commentId')
-            ->setParameter('commentId', $comment->getId())
-            ->groupBy('c.id');
-
-        return $qb->getQuery()->getSingleResult();
-    }
 }

@@ -25,9 +25,8 @@ class Post
     private ?User $author = null;
 
 
-    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy="post", orphanRemoval=true)
-
-    private ?Comment $comments;
+    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'post', orphanRemoval: true)]
+    private Collection $comments;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $image = null;
@@ -115,7 +114,7 @@ class Post
     }
 
     /**
-     * @return Collection|Comment[]
+     * @return Collection<int, Comment>
      */
     public function getComments(): Collection
     {

@@ -3,12 +3,17 @@
 {% block title %}Blog Posts{% endblock %}
 
 {% block body %}
-    <h1>Blog Posts</h1>
-    <a href="{{ path('post_new') }}">Create new post</a>
+
+    <h3 class="add-content-button"><a href="{{ path('post_new') }}">Stwórz nową zawartość!</a></h3>
     <ul>
         {% for post in posts %}
             <li>
                 <a href="{{ path('post_show', {id: post.id}) }}">{{ post.title }}</a>
+                {% if post.image %}
+                    <div>
+                        <img src="{{ asset('uploads/images/' ~ post.image) }}" alt="{{ post.title }}" style="max-width: 50%; height: auto;" />
+                    </div>
+                {% endif %}
             </li>
         {% endfor %}
     </ul>

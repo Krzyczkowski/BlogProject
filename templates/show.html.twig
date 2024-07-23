@@ -1,13 +1,35 @@
-{% extends 'base.html.twig' %}
 
-{% block title %}Post{% endblock %}
+{% extends 'base.html.twig' %}
 
 {% block body %}
     <h1>{{ post.title }}</h1>
     <p>{{ post.content }}</p>
-    <p>Created at: {{ post.createdAt|date('Y-m-d H:i') }}</p>
-
     {% if post.image %}
-        <img src="{{ asset('uploads/images/' ~ post.image) }}" alt="{{ post.title }}" />
+        <div>
+            <h3>Image:</h3>
+            <img src="{{ asset('uploads/images/' ~ post.image) }}" alt="{{ post.title }}" />
+        </div>
+    {% endif %}
+    <h2>Comments</h2>
+
+    <div>
+        {% for comment in comments %}
+            <div>
+                <p><strong>{{ comment.author.username }}</strong></p>
+                <p>{{ comment.content }}</p>
+                <p>Posted on {{ comment.createdAt|date('Y-m-d H:i') }}</p>
+            </div>
+        {% else %}
+            <p>No comments yet.</p>
+        {% endfor %}
+    </div>
+
+    {% if app.user %}
+        {{ form_start(commentForm) }}
+        {{ form_widget(commentForm) }}
+        <button class="btn">Submit</button>
+        {{ form_end(commentForm) }}
+    {% else %}
+        <p>You need to be logged in to add a comment.</p>
     {% endif %}
 {% endblock %}

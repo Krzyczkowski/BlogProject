@@ -1,13 +1,16 @@
 <?php
 
-// src/Controller/PostController.php
-
 namespace App\Controller;
 
+use App\Entity\Comment;
+use App\Entity\CommentVote;
 use App\Entity\Post;
+use App\Form\CommentFormType;
 use App\Form\PostFormType;
+use App\Repository\CommentRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -59,9 +62,8 @@ class PostController extends AbstractController
                         $newFilename
                     );
                 } catch (FileException $e) {
-                    // handle exception if something happens during file upload
                     $this->addFlash('error', 'Failed to upload image.');
-                    return $this->render('post/new.html.twig', [
+                    return $this->render('new.html.twig', [
                         'form' => $form->createView(),
                     ]);
                 }
@@ -80,12 +82,31 @@ class PostController extends AbstractController
         ]);
     }
 
-
     #[Route('/post/{id}', name: 'post_show')]
-    public function show(Post $post): Response
+    public function show(Post $post, Request $request, EntityManagerInterface $entityManager): Response
     {
+        $comment = new Comment();
+        $form = $this->createForm(CommentFormType::class, $comment);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $comment->setPost($post);
+            $comment->setAuthor($this->getUser());
+            $comment->setCreatedAt(new \DateTimeImmutable());
+            $comment->setUpdatedAt(new \DateTimeImmutable());
+
+            $entityManager->persist($comment);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('post_show', ['id' => $post->getId()]);
+        }
+
+        $comments = $post->getComments();
+
         return $this->render('show.html.twig', [
             'post' => $post,
+            'commentForm' => $form->createView(),
+            'comments' => $comments,
         ]);
     }
 }

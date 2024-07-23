@@ -16,11 +16,20 @@ class Comment
     #[ORM\Column(length: 255)]
     private ?string $content = null;
 
-    #[ORM\Column]
-    private ?int $post_id = null;
+    #[ORM\ManyToOne(targetEntity: Post::class, inversedBy: 'comments')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Post $post = null;
 
-    #[ORM\Column]
-    private ?int $author_id = null;
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $author = null;
+
+
+    public function __construct()
+    {
+        $this->created_at = new \DateTimeImmutable();
+        $this->updated_at = new \DateTimeImmutable();
+    }
 
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
@@ -45,29 +54,28 @@ class Comment
         return $this;
     }
 
-    public function getPostId(): ?int
+    public function getPost(): ?Post
     {
-        return $this->post_id;
+        return $this->post;
     }
 
-    public function setPostId(int $post_id): static
+    public function setPost(?Post $post): self
     {
-        $this->post_id = $post_id;
+        $this->post = $post;
+        return $this;
+    }
+    public function getAuthor(): ?User
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(?User $author): self
+    {
+        $this->author = $author;
 
         return $this;
     }
 
-    public function getAuthorId(): ?int
-    {
-        return $this->author_id;
-    }
-
-    public function setAuthorId(int $author_id): static
-    {
-        $this->author_id = $author_id;
-
-        return $this;
-    }
 
     public function getCreatedAt(): ?\DateTimeImmutable
     {
@@ -92,4 +100,5 @@ class Comment
 
         return $this;
     }
+
 }

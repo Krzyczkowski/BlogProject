@@ -1,0 +1,103 @@
+/* assets/styles/styles.css */
+
+:root {
+    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    font-size:22px;
+    font-weight: 400;
+    --default-spacing: 10px;
+    --default-margin: 1rem;
+    --medium-margin: 3rem;
+    --larger-margin: 5rem;
+    --primary-bg-color: #1b1b32;
+    --primary-color: white;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+input{
+    padding:0.3rem;
+}
+body {
+    color: var(--primary-color);
+    background-color: var(--primary-bg-color);
+}
+h1 {
+    color: #1bb9ff;
+}
+
+.btn {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+.btn:hover {
+    background-color: #0056b3;
+}
+main{
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin:auto;
+}
+a{
+    text-decoration: none;
+    color:#1486b8;
+}
+a:visited{
+    text-decoration: none;
+}
+a:hover{
+    text-decoration: none;
+    color:#1bb9ff;
+}
+
+header{
+    background-color:#0a0a23 ;
+    padding:0.41rem;
+    display:flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.add-content-button{
+    background-color:white;
+    color: #1f1f6f !important;
+    padding:0.5rem;
+    border-radius:10px;
+    box-shadow: 5px 5px 5px rgba(0,0,0,0.1);
+    margin:2rem;
+    border:3px solid black;
+}
+
+section.content-creation{
+    background-color: white;
+    color: #090922;
+    padding:1rem;
+    margin:2rem;
+    border-radius:10px;
+    display:flex;
+    flex-direction: column;
+
+}
+
+section.content-creation label{
+    margin: 0.5rem 1rem 0 0.5rem;
+}
+section.content-creation div{
+    margin-top:0.5rem;
+}
+section.content-creation input{
+    float:right;
+}
+
+#comment_form_content{
+    padding:1rem;
+}
