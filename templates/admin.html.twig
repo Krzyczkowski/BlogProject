@@ -1,0 +1,66 @@
+{# templates/admin/index.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block body %}
+    <h1>Admin Dashboard</h1>
+
+    <h2>Categories</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for category in categories %}
+            <tr>
+                <td>{{ category.id }}</td>
+                <td>{{ category.name }}</td>
+                <td>
+                    <a href="{{ path('admin_category_delete', {id: category.id}) }}">Delete</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <h3>Create New Category</h3>
+    {{ form_start(categoryForm) }}
+    {{ form_widget(categoryForm) }}
+    <button type="submit">Create</button>
+    {{ form_end(categoryForm) }}
+
+    <h2>Reported Posts</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Post Title</th>
+            <th>Reported By</th>
+            <th>Date Reported</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for report in reports %}
+            <tr>
+                <td>{{ report.id }}</td>
+                <td>{{ report.post.title }}</td>
+                <td>{{ report.user.username }}</td>
+                <td>{{ report.createdAt|date('Y-m-d H:i') }}</td>
+                <td>
+                    <a href="{{ path('post_show', {id: report.post.id}) }}" class="btn btn-info">View Post</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">No reports found.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

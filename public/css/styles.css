@@ -42,6 +42,7 @@ h1 {
     background-color: #0056b3;
 }
 main{
+    padding-top:2rem;
     display:flex;
     flex-direction: column;
     justify-content: center;
@@ -62,10 +63,12 @@ a:hover{
 
 header{
     background-color:#0a0a23 ;
+    width: 100%;
     padding:0.41rem;
     display:flex;
     flex-direction: row;
     justify-content: space-between;
+    position:fixed;
 }
 .add-content-button{
     background-color:white;
@@ -73,7 +76,7 @@ header{
     padding:0.5rem;
     border-radius:10px;
     box-shadow: 5px 5px 5px rgba(0,0,0,0.1);
-    margin:2rem;
+    margin:0;
     border:3px solid black;
 }
 
@@ -100,4 +103,31 @@ section.content-creation input{
 
 #comment_form_content{
     padding:1rem;
+}
+ul,li{
+    list-style-type: none;
+}
+.post{
+    background-color: white;
+    margin:0.5rem;
+    border-radius: 15px;
+    border: 3px solid black;
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.small{
+    font-size:0.7rem;
+}
+
+.big{
+    font-size:2.7rem;
+}
+
+.content-management{
+    margin-left:0;
+    width:100%;
+    text-align: left;
 }

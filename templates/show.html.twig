@@ -1,15 +1,27 @@
-
+{# templates/post/show.html.twig #}
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>{{ post.title }}</h1>
+    <h1 class="big">{{ post.title }}</h1>
     <p>{{ post.content }}</p>
     {% if post.image %}
         <div>
-            <h3>Image:</h3>
             <img src="{{ asset('uploads/images/' ~ post.image) }}" alt="{{ post.title }}" />
         </div>
     {% endif %}
+    <p>Likes: {{ likeCount }}</p>
+    <br><br>
+    <div>
+        <a href="{{ path('post_like', {'id': post.id}) }}" class="btn btn-primary">Like</a>
+        <a href="{{ path('post_report', {'id': post.id}) }}" class="btn btn-danger">Report</a>
+        {% if app.user and app.user == post.author %}
+            <a href="{{ path('post_edit', {'id': post.id}) }}" class="btn btn-warning">Update</a>
+            <a href="{{ path('post_delete', {'id': post.id}) }}" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this post?');">Delete</a>
+        {% elseif is_granted('ROLE_ADMIN') %}
+            <a href="{{ path('post_delete', {'id': post.id}) }}" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this post?');">Delete</a>
+        {% endif %}
+    </div>
+
     <h2>Comments</h2>
 
     <div>
@@ -17,13 +29,13 @@
             <div>
                 <p><strong>{{ comment.author.username }}</strong></p>
                 <p>{{ comment.content }}</p>
-                <p>Posted on {{ comment.createdAt|date('Y-m-d H:i') }}</p>
+                <p class="small">Posted on {{ comment.createdAt|date('Y-m-d H:i') }}</p>
             </div>
         {% else %}
             <p>No comments yet.</p>
         {% endfor %}
     </div>
-
+    <br>
     {% if app.user %}
         {{ form_start(commentForm) }}
         {{ form_widget(commentForm) }}

@@ -10,9 +10,10 @@
         {% endblock %}
         <header>
             <a href="{{ path('post_index') }}" class="header-link">
-                <h3>Strona główna</h3>
+                <h3>Home</h3>
             </a>
             {% if app.user %}
+
                 <div class="mb-3">
                     You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
                 </div>
