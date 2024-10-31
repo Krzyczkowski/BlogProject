@@ -61,7 +61,6 @@ class PostController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
-        // Check if the logged-in user is the author of the post
         if ($post->getAuthor() !== $user) {
             throw $this->createAccessDeniedException('You are not allowed to edit this post.');
         }
@@ -72,7 +71,8 @@ class PostController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $post->setUpdatedAt(new \DateTimeImmutable());
 
-            // Handle image upload
+
+            // IMAGE
             $imageFile = $form->get('image')->getData();
             if ($imageFile) {
                 $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
@@ -122,7 +122,6 @@ class PostController extends AbstractController
             $post->setCreatedAt(new \DateTimeImmutable());
             $post->setUpdatedAt(new \DateTimeImmutable());
 
-            // Handle image upload
             $imageFile = $form->get('image')->getData();
             if ($imageFile) {
                 $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
@@ -189,7 +188,6 @@ class PostController extends AbstractController
     {
         $user = $this->getUser();
 
-        // Check if the user is the author of the post or an admin
         if (!$user || ($post->getAuthor() !== $user && !$this->isGranted('ROLE_ADMIN'))) {
             throw $this->createAccessDeniedException('You are not allowed to delete this post.');
         }

@@ -19,7 +19,7 @@ class PostLike
     private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'likes')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Post $post = null;
 
     #[ORM\Column(nullable: true)]
